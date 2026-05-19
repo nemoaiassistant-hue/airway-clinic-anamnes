@@ -795,7 +795,7 @@
         }
 
         // Header
-        doc.setDrawColor(185, 150, 69);
+        doc.setDrawColor(55, 183, 181);
         doc.setLineWidth(0.5);
         doc.line(margin, 12, pageW - margin, 12);
         addText('Airway Clinic', 10, false);
@@ -814,7 +814,7 @@
 
         const sections = [
           {
-            title: '🤰 Pregnancy',
+            title: 'Pregnancy',
             fields: [
               { key: 'graviditet', q: 'How was the pregnancy?' },
               { key: 'graviditet_annat', q: 'Pregnancy – other' },
@@ -822,7 +822,7 @@
             ]
           },
           {
-            title: '👶 Birth',
+            title: 'Birth',
             fields: [
               { key: 'forlossning', q: 'How was the delivery?' },
               { key: 'forlossning_annat', q: 'Delivery – other' },
@@ -831,7 +831,7 @@
             ]
           },
           {
-            title: '🍼 Breastfeeding & Nutrition',
+            title: 'Breastfeeding & Nutrition',
             fields: [
               { key: 'ammades', q: 'Was the baby breastfed?' },
               { key: 'hur_lange_ammad', q: 'How long was the baby breastfed?' },
@@ -845,7 +845,7 @@
             ]
           },
           {
-            title: '🧸 Motor Development',
+            title: 'Motor Development',
             fields: [
               { key: 'krypning', q: 'When did the baby start crawling? Did they crawl symmetrically before standing?' },
               { key: 'forsta_steg', q: 'When were the first steps taken?' },
@@ -853,7 +853,7 @@
             ]
           },
           {
-            title: '💊 Health History',
+            title: 'Health History',
             fields: [
               { key: 'sjukdomar', q: 'What types of illnesses has the child had? Sinus, throat or ear infections, stomach pain?' },
               { key: 'vaccinationer', q: 'Vaccinations? Any reactions to specific vaccinations? Not vaccinated?' },
@@ -861,21 +861,21 @@
             ]
           },
           {
-            title: '🦷 Sucking & Biting Habits',
+            title: 'Sucking & Biting Habits',
             fields: [
               { key: 'bitvanor', q: 'Sucking/biting habits?' },
               { key: 'bitvanor_annat', q: 'Sucking/biting habits – other' }
             ]
           },
           {
-            title: '🔊 Sensory Difficulties',
+            title: 'Sensory Difficulties',
             fields: [
               { key: 'sensoriskt', q: 'Sensory difficulties?' },
               { key: 'sensoriskt_beskriv', q: 'Tell us more about sensory difficulties:' }
             ]
           },
           {
-            title: '🍽️ Eating & Digestion',
+            title: 'Eating & Digestion',
             fields: [
               { key: 'bordsskick', q: 'Table manners, large gulps, eats fast/slow?' },
               { key: 'krasen', q: 'Picky eater? If yes, how, when, and what does the child eat?' },
@@ -885,14 +885,14 @@
             ]
           },
           {
-            title: '🔴 Tonsils & Adenoids',
+            title: 'Tonsils & Adenoids',
             fields: [
               { key: 'tonsiller', q: 'Problems with tonsils or adenoids?' },
               { key: 'tonsiller_annat', q: 'Tonsils/adenoids – other' }
             ]
           },
           {
-            title: '😴 Sleep',
+            title: 'Sleep',
             fields: [
               { key: 'sommen', q: 'Tell us about sleep:' },
               { key: 'sangvatning', q: 'Bedwetting problems? If yes, how often?' },
@@ -903,7 +903,7 @@
             ]
           },
           {
-            title: '🤕 Pain & Symptoms',
+            title: 'Pain & Symptoms',
             fields: [
               { key: 'huvudvark', q: 'Headaches? If yes, tell us more.' },
               { key: 'tmj', q: 'TMJ pain or clicking jaw joints? If yes, tell us more:' },
@@ -911,7 +911,7 @@
             ]
           },
           {
-            title: '🌬️ Breathing & Allergies',
+            title: 'Breathing & Allergies',
             fields: [
               { key: 'andning', q: 'Breathing' },
               { key: 'andning_annat', q: 'Breathing – other' },
@@ -920,7 +920,7 @@
             ]
           },
           {
-            title: '🧠 Posture, Behaviour & Activities',
+            title: 'Posture, Behaviour & Activities',
             fields: [
               { key: 'hallning', q: 'How is the posture? Slouched, loose, limping? Etc.' },
               { key: 'beteende', q: 'Behavioural or neurodevelopmental difficulties? If yes, tell us more:' },
@@ -930,7 +930,7 @@
             ]
           },
           {
-            title: '📝 Additional Remarks',
+            title: 'Additional Remarks',
             fields: [
               { key: 'ovrigt', q: 'Any additional comments:' }
             ]
@@ -939,7 +939,7 @@
 
         sections.forEach(section => {
           if (y + 12 > 280) { doc.addPage(); y = 15; }
-          doc.setFillColor(185, 150, 69);
+          doc.setFillColor(55, 183, 181);
           doc.rect(margin, y, usable, 7, 'F');
           doc.setTextColor(255, 255, 255);
           doc.setFontSize(12);

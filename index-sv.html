@@ -844,7 +844,7 @@
         }
 
         // Header with logo line
-        doc.setDrawColor(185, 150, 69); // gold
+        doc.setDrawColor(55, 183, 181); // teal
         doc.setLineWidth(0.5);
         doc.line(margin, 12, pageW - margin, 12);
         addText('Airway Clinic', 10, false);
@@ -864,7 +864,7 @@
         // Structured sections with full question text
         const sections = [
           {
-            title: '🤰 Graviditet',
+            title: 'Graviditet',
             fields: [
               { key: 'graviditet', q: 'Hur var graviditeten?' },
               { key: 'graviditet_annat', q: 'Graviditet – annat' },
@@ -872,7 +872,7 @@
             ]
           },
           {
-            title: '👶 Förlossning',
+            title: 'Förlossning',
             fields: [
               { key: 'forlossning', q: 'Hur gick förlossningen?' },
               { key: 'forlossning_annat', q: 'Förlossning – annat' },
@@ -881,7 +881,7 @@
             ]
           },
           {
-            title: '🍼 Amning & Näring',
+            title: 'Amning & Näring',
             fields: [
               { key: 'ammades', q: 'Ammades barnet?' },
               { key: 'hur_lange_ammad', q: 'Hur länge ammades barnet?' },
@@ -895,7 +895,7 @@
             ]
           },
           {
-            title: '🧸 Motorisk Utveckling',
+            title: 'Motorisk Utveckling',
             fields: [
               { key: 'krypning', q: 'När började barnet krypa? Kröp barnet symmetriskt innan det började stå upp?' },
               { key: 'forsta_steg', q: 'När kom första stegen?' },
@@ -903,7 +903,7 @@
             ]
           },
           {
-            title: '💊 Häls Historik',
+            title: 'Häls Historik',
             fields: [
               { key: 'sjukdomar', q: 'Vilka typer av sjukdomar har barnet haft? Sinus-, hals- eller öroninfektioner, magont?' },
               { key: 'vaccinationer', q: 'Vaccinationer? Några reaktioner på specifika vaccinationer? Ej vaccinerad?' },
@@ -911,21 +911,21 @@
             ]
           },
           {
-            title: '🦷 Sug- & Bitvanor',
+            title: 'Sug- & Bitvanor',
             fields: [
               { key: 'bitvanor', q: 'Sug-/bitvanor?' },
               { key: 'bitvanor_annat', q: 'Sug-/bitvanor – annat' }
             ]
           },
           {
-            title: '🔊 Sensoriska Svårigheter',
+            title: 'Sensoriska Svårigheter',
             fields: [
               { key: 'sensoriskt', q: 'Sensoriska svårigheter?' },
               { key: 'sensoriskt_beskriv', q: 'Berätta mer om sensoriska svårigheterna:' }
             ]
           },
           {
-            title: '🍽️ Mat & Matsmältning',
+            title: 'Mat & Matsmältning',
             fields: [
               { key: 'bordsskick', q: 'Bordsskick, stora klunkar, äter snabbt/långsamt?' },
               { key: 'krasen', q: 'Kräsen ätare? Om ja, hur, när och vad äter barnet?' },
@@ -935,14 +935,14 @@
             ]
           },
           {
-            title: '🔴 Tonsiller & Adenoid',
+            title: 'Tonsiller & Adenoid',
             fields: [
               { key: 'tonsiller', q: 'Problem med tonsiller eller adenoid?' },
               { key: 'tonsiller_annat', q: 'Tonsiller – annat' }
             ]
           },
           {
-            title: '😴 Sömn',
+            title: 'Sömn',
             fields: [
               { key: 'sommen', q: 'Berätta om sömnen:' },
               { key: 'sangvatning', q: 'Problem med sängvätning? Om ja, hur ofta?' },
@@ -953,7 +953,7 @@
             ]
           },
           {
-            title: '🤕 Smärta & Symtom',
+            title: 'Smärta & Symtom',
             fields: [
               { key: 'huvudvark', q: 'Huvudvärk? Om ja, berätta mer.' },
               { key: 'tmj', q: 'TMJ-smärta eller klickande käkleder? Om ja, berätta mer:' },
@@ -961,7 +961,7 @@
             ]
           },
           {
-            title: '🌬️ Andning & Allergi',
+            title: 'Andning & Allergi',
             fields: [
               { key: 'andning', q: 'Andning' },
               { key: 'andning_annat', q: 'Andning – annat' },
@@ -970,7 +970,7 @@
             ]
           },
           {
-            title: '🧠 Hållning, Beteende & Fritid',
+            title: 'Hållning, Beteende & Fritid',
             fields: [
               { key: 'hallning', q: 'Hur är hållningen? Ihopsjunken, slapp, halt? Etc.' },
               { key: 'beteende', q: 'Beteendesvårigheter eller neuropsykiatriska svårigheter? Om ja, berätta mer:' },
@@ -980,7 +980,7 @@
             ]
           },
           {
-            title: '📝 Övrigt',
+            title: 'Övrigt',
             fields: [
               { key: 'ovrigt', q: 'Ytterligare anmärkningar:' }
             ]
@@ -990,7 +990,7 @@
         sections.forEach(section => {
           // Section header
           if (y + 12 > 280) { doc.addPage(); y = 15; }
-          doc.setFillColor(185, 150, 69);
+          doc.setFillColor(55, 183, 181);
           doc.rect(margin, y, usable, 7, 'F');
           doc.setTextColor(255, 255, 255);
           doc.setFontSize(12);
