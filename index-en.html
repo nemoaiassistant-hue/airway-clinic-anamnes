@@ -684,6 +684,7 @@
     <p class="foot">All information is handled confidentially in accordance with applicable data protection regulations.</p>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
   <script>
     // Show "other" fields for radio groups
     document.querySelectorAll('[data-show-when]').forEach(el => {
@@ -776,6 +777,93 @@
 
         const note = `Craniofacial History — Adult (EN)\nDate: ${formData.datum || 'not provided'}\nDOB: ${formData.fodelsedatum || 'not provided'}\nConsent: ${formData.consent || 'not provided'}\n\n${noteLines.join('\n') || 'No additional details.'}`;
 
+        // Generate PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const pageW = doc.internal.pageSize.getWidth();
+        const margin = 15;
+        const usable = pageW - margin * 2;
+        let y = 15;
+
+        function addText(text, size, bold) {
+          doc.setFontSize(size);
+          doc.setFont('helvetica', bold ? 'bold' : 'normal');
+          const lines = doc.splitTextToSize(text, usable);
+          if (y + lines.length * (size * 0.45) > 280) { doc.addPage(); y = 15; }
+          doc.text(lines, margin, y);
+          y += lines.length * (size * 0.45) + 2;
+        }
+
+        addText('Craniofacial History — Adult', 18, true);
+        y += 4;
+        addText(`Name: ${formData.namn || '-'}`, 11, false);
+        addText(`Email: ${formData.email}`, 11, false);
+        addText(`Date of Birth: ${formData.fodelsedatum || '-'}`, 11, false);
+        addText(`Address: ${formData.adress || '-'}`, 11, false);
+        addText(`Date: ${formData.datum || '-'}`, 11, false);
+        addText(`Consent: ${formData.consent === 'ja' ? 'Yes' : formData.consent === 'nej' ? 'No' : '-'}`, 11, false);
+        y += 4;
+
+        const sectionLabels = {
+          graviditet: 'Pregnancy',
+          tarmhalsa: 'Mother\'s gut health',
+          forlossning: 'Birth/Delivery',
+          kejsarsnitt_beskriv: 'Caesarean details',
+          andning_efter: 'Breathing after birth',
+          ammades: 'Breastfed',
+          hur_lange_ammad: 'How long breastfed',
+          smartam_amning: 'Painful breastfeeding',
+          amningskonsult: 'Breastfeeding consultant',
+          kolik: 'Colic',
+          krakningar: 'Vomiting',
+          mjolkersattning: 'Formula',
+          fast_mat: 'Solid food',
+          krypning: 'Crawling',
+          forsta_steg: 'First steps',
+          finmotorik: 'Fine motor skills',
+          sjukdomar: 'Illnesses',
+          vaccinationer: 'Vaccinations',
+          medicin: 'Medication/Antibiotics',
+          bitvanor: 'Sucking/Biting habits',
+          sensoriskt: 'Sensory difficulties',
+          sensoriskt_beskriv: 'Sensory — description',
+          bordsskick: 'Table manners',
+          krasen: 'Picky eater',
+          hicka: 'Hiccups',
+          svaljning: 'Swallowing difficulties',
+          gaser: 'Gas/Bloating',
+          tonsiller: 'Tonsils/Adenoids',
+          sommen: 'Sleep',
+          sangvatning: 'Bedwetting',
+          sovstallning: 'Sleeping position',
+          gnisslar: 'Teeth grinding',
+          snarkar: 'Snoring',
+          somnnapne: 'Sleep apnoea',
+          huvudvark: 'Headaches',
+          tmj: 'TMJ/Jaw joints',
+          oron: 'Ear pain',
+          andning: 'Breathing',
+          allergier: 'Allergies',
+          husdjur: 'Pets',
+          hallning: 'Posture',
+          beteende: 'Behavioural difficulties',
+          inlarning: 'Learning difficulties',
+          fritid: 'Leisure activities',
+          trauma: 'Previous trauma',
+          ovrigt: 'Additional remarks'
+        };
+
+        Object.entries(formData).forEach(([key, val]) => {
+          if (['namn', 'email', 'fodelsedatum', 'adress', 'datum', 'consent'].includes(key)) return;
+          const label = sectionLabels[key] || key;
+          const displayVal = val.replace(/_/g, ' ');
+          addText(label, 11, true);
+          addText(displayVal, 10, false);
+          y += 2;
+        });
+
+        const pdfBase64 = doc.output('datauristring').split(',')[1];
+
         const res = await fetch('https://airway-clinic-survey.netlify.app/.netlify/functions/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -786,7 +874,8 @@
             phone: formData.adress || '',
             symptoms: noteLines,
             _formType: 'kraniofacial-anamnes-en',
-            _note: note
+            _note: note,
+            pdfBase64: pdfBase64
           })
         });
 
