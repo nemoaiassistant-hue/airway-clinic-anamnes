@@ -843,73 +843,171 @@
           y += lines.length * (size * 0.45) + 2;
         }
 
+        // Header with logo line
+        doc.setDrawColor(185, 150, 69); // gold
+        doc.setLineWidth(0.5);
+        doc.line(margin, 12, pageW - margin, 12);
+        addText('Airway Clinic', 10, false);
         addText('Kraniofacial Anamnes — Vuxen', 18, true);
-        y += 4;
-        addText(`Namn: ${formData.namn || '-'}`, 11, false);
-        addText(`E-post: ${formData.email}`, 11, false);
-        addText(`Födelsedatum: ${formData.fodelsedatum || '-'}`, 11, false);
-        addText(`Adress: ${formData.adress || '-'}`, 11, false);
-        addText(`Datum: ${formData.datum || '-'}`, 11, false);
-        addText(`Samtycke: ${formData.consent === 'ja' ? 'Ja' : formData.consent === 'nej' ? 'Nej' : '-'}`, 11, false);
+        doc.line(margin, y, pageW - margin, y);
+        y += 6;
+
+        addText('Kontaktuppgifter', 13, true);
+        addText(`Namn: ${formData.namn || '-'}`, 10, false);
+        addText(`E-post: ${formData.email}`, 10, false);
+        addText(`Födelsedatum: ${formData.fodelsedatum || '-'}`, 10, false);
+        addText(`Adress: ${formData.adress || '-'}`, 10, false);
+        addText(`Datum: ${formData.datum || '-'}`, 10, false);
+        addText(`Samtycke till datalagring: ${formData.consent === 'ja' ? 'Ja' : formData.consent === 'nej' ? 'Nej' : 'Ej angivet'}`, 10, false);
         y += 4;
 
-        // Section labels mapping
-        const sectionLabels = {
-          graviditet: 'Graviditet',
-          tarmhalsa: 'Mammans tarmhälsa',
-          forlossning: 'Förlossning',
-          kejsarsnitt_beskriv: 'Kejsarsnitt – förlopp',
-          andning_efter: 'Andning efter förlossning',
-          ammades: 'Ammades',
-          hur_lange_ammad: 'Hur länge ammad',
-          smartam_amning: 'Smärtsam amning',
-          amningskonsult: 'Amningskonsult',
-          kolik: 'Kolik',
-          krakningar: 'Kräkningar',
-          mjolkersattning: 'Mjölkersättning',
-          fast_mat: 'Fast mat',
-          krypning: 'Krypning',
-          forsta_steg: 'Första steg',
-          finmotorik: 'Finmotorik',
-          sjukdomar: 'Sjukdomar',
-          vaccinationer: 'Vaccinationer',
-          medicin: 'Medicin/Antibiotika',
-          bitvanor: 'Sug-/Bitvanor',
-          sensoriskt: 'Sensoriska svårigheter',
-          sensoriskt_beskriv: 'Sensoriskt – beskrivning',
-          bordsskick: 'Bordsskick',
-          krasen: 'Kräsen ätare',
-          hicka: 'Hicka',
-          svaljning: 'Sväljningssvårigheter',
-          gaser: 'Gaser/Uppblåst',
-          tonsiller: 'Tonsiller/Adenoid',
-          sommen: 'Sömn',
-          sangvatning: 'Sängvätning',
-          sovstallning: 'Sovställning',
-          gnisslar: 'Tandgnissling',
-          snarkar: 'Snarkning',
-          somnnapne: 'Sömnapné',
-          huvudvark: 'Huvudvärk',
-          tmj: 'TMJ/Käkleder',
-          oron: 'Öronsmärta',
-          andning: 'Andning',
-          allergier: 'Allergier',
-          husdjur: 'Husdjur',
-          hallning: 'Hållning',
-          beteende: 'Beteendesvårigheter',
-          inlarning: 'Inlärningssvårigheter',
-          fritid: 'Fritidsaktiviteter',
-          trauma: 'Tidigare trauma',
-          ovrigt: 'Övrigt'
-        };
+        // Structured sections with full question text
+        const sections = [
+          {
+            title: '🤰 Graviditet',
+            fields: [
+              { key: 'graviditet', q: 'Hur var graviditeten?' },
+              { key: 'graviditet_annat', q: 'Graviditet – annat' },
+              { key: 'tarmhalsa', q: 'Hur var mammans tarmhälsa?' }
+            ]
+          },
+          {
+            title: '👶 Förlossning',
+            fields: [
+              { key: 'forlossning', q: 'Hur gick förlossningen?' },
+              { key: 'forlossning_annat', q: 'Förlossning – annat' },
+              { key: 'kejsarsnitt_beskriv', q: 'Om kejsarsnitt, beskriv förloppet:' },
+              { key: 'andning_efter', q: 'Hur gick det med barnets andning efter förlossningen?' }
+            ]
+          },
+          {
+            title: '🍼 Amning & Näring',
+            fields: [
+              { key: 'ammades', q: 'Ammades barnet?' },
+              { key: 'hur_lange_ammad', q: 'Hur länge ammades barnet?' },
+              { key: 'smartam_amning', q: 'Smärtsam amning? Om ja, utveckla:' },
+              { key: 'amningskonsult', q: 'Besökt amningskonsult?' },
+              { key: 'amningskonsult_annat', q: 'Amningskonsult – annat' },
+              { key: 'kolik', q: 'Hade barnet kolik? Om ja, utveckla:' },
+              { key: 'krakningar', q: 'Kräktes barnet? Om ja, hur mycket/ofta?' },
+              { key: 'mjolkersattning', q: '(Delvis) mjölkersättning? Om ja, när och hur länge?' },
+              { key: 'fast_mat', q: 'När introducerades fast mat och hur gick det? Dregling, sätta i halsen etc.' }
+            ]
+          },
+          {
+            title: '🧸 Motorisk Utveckling',
+            fields: [
+              { key: 'krypning', q: 'När började barnet krypa? Kröp barnet symmetriskt innan det började stå upp?' },
+              { key: 'forsta_steg', q: 'När kom första stegen?' },
+              { key: 'finmotorik', q: 'Svårigheter med finmotorisk utveckling? (klippa, rita, pincettgrepp, knyta skorna)' }
+            ]
+          },
+          {
+            title: '💊 Häls Historik',
+            fields: [
+              { key: 'sjukdomar', q: 'Vilka typer av sjukdomar har barnet haft? Sinus-, hals- eller öroninfektioner, magont?' },
+              { key: 'vaccinationer', q: 'Vaccinationer? Några reaktioner på specifika vaccinationer? Ej vaccinerad?' },
+              { key: 'medicin', q: 'Tidigare användning av medicin eller antibiotika:' }
+            ]
+          },
+          {
+            title: '🦷 Sug- & Bitvanor',
+            fields: [
+              { key: 'bitvanor', q: 'Sug-/bitvanor?' },
+              { key: 'bitvanor_annat', q: 'Sug-/bitvanor – annat' }
+            ]
+          },
+          {
+            title: '🔊 Sensoriska Svårigheter',
+            fields: [
+              { key: 'sensoriskt', q: 'Sensoriska svårigheter?' },
+              { key: 'sensoriskt_beskriv', q: 'Berätta mer om sensoriska svårigheterna:' }
+            ]
+          },
+          {
+            title: '🍽️ Mat & Matsmältning',
+            fields: [
+              { key: 'bordsskick', q: 'Bordsskick, stora klunkar, äter snabbt/långsamt?' },
+              { key: 'krasen', q: 'Kräsen ätare? Om ja, hur, när och vad äter barnet?' },
+              { key: 'hicka', q: 'Har barnet ofta hicka?' },
+              { key: 'svaljning', q: 'Svårt/omöjligt att svälja vissa saker? Mat, piller, dryck?' },
+              { key: 'gaser', q: 'Gaser eller uppblåst? Om ja, när, hur ofta?' }
+            ]
+          },
+          {
+            title: '🔴 Tonsiller & Adenoid',
+            fields: [
+              { key: 'tonsiller', q: 'Problem med tonsiller eller adenoid?' },
+              { key: 'tonsiller_annat', q: 'Tonsiller – annat' }
+            ]
+          },
+          {
+            title: '😴 Sömn',
+            fields: [
+              { key: 'sommen', q: 'Berätta om sömnen:' },
+              { key: 'sangvatning', q: 'Problem med sängvätning? Om ja, hur ofta?' },
+              { key: 'sovstallning', q: 'Sovställning' },
+              { key: 'gnisslar', q: 'Gnisslar tänder? Om ja, hur ofta?' },
+              { key: 'snarkar', q: 'Snarkar? Om ja, hur mycket/ofta?' },
+              { key: 'somnnapne', q: 'Sömnapné? Om ja, hur ofta/mycket?' }
+            ]
+          },
+          {
+            title: '🤕 Smärta & Symtom',
+            fields: [
+              { key: 'huvudvark', q: 'Huvudvärk? Om ja, berätta mer.' },
+              { key: 'tmj', q: 'TMJ-smärta eller klickande käkleder? Om ja, berätta mer:' },
+              { key: 'oron', q: 'Ont i öronen? Om ja, hur ofta? Med/utan löpöra?' }
+            ]
+          },
+          {
+            title: '🌬️ Andning & Allergi',
+            fields: [
+              { key: 'andning', q: 'Andning' },
+              { key: 'andning_annat', q: 'Andning – annat' },
+              { key: 'allergier', q: 'Allergier? Om ja, vilka?' },
+              { key: 'husdjur', q: 'Husdjur? Om ja, vilka?' }
+            ]
+          },
+          {
+            title: '🧠 Hållning, Beteende & Fritid',
+            fields: [
+              { key: 'hallning', q: 'Hur är hållningen? Ihopsjunken, slapp, halt? Etc.' },
+              { key: 'beteende', q: 'Beteendesvårigheter eller neuropsykiatriska svårigheter? Om ja, berätta mer:' },
+              { key: 'inlarning', q: 'Inlärningssvårigheter? Om ja, berätta mer:' },
+              { key: 'fritid', q: 'Fritidsaktiviteter, sport, musik, etc? Vilka?' },
+              { key: 'trauma', q: 'Tidigare trauma?' }
+            ]
+          },
+          {
+            title: '📝 Övrigt',
+            fields: [
+              { key: 'ovrigt', q: 'Ytterligare anmärkningar:' }
+            ]
+          }
+        ];
 
-        Object.entries(formData).forEach(([key, val]) => {
-          if (['namn', 'email', 'fodelsedatum', 'adress', 'datum', 'consent'].includes(key)) return;
-          const label = sectionLabels[key] || key;
-          const displayVal = val.replace(/_/g, ' ');
-          addText(label, 11, true);
-          addText(displayVal, 10, false);
-          y += 2;
+        sections.forEach(section => {
+          // Section header
+          if (y + 12 > 280) { doc.addPage(); y = 15; }
+          doc.setFillColor(185, 150, 69);
+          doc.rect(margin, y, usable, 7, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(12);
+          doc.setFont('helvetica', 'bold');
+          doc.text(section.title, margin + 3, y + 5.5);
+          doc.setTextColor(75, 75, 99);
+          y += 10;
+
+          section.fields.forEach(f => {
+            const val = formData[f.key];
+            if (val === undefined || val === null || val === '') return;
+            const displayVal = val.replace(/_/g, ' ');
+            addText(f.q, 10, true);
+            addText(displayVal, 10, false);
+            y += 3;
+          });
+          y += 3;
         });
 
         const pdfBase64 = doc.output('datauristring').split(',')[1];

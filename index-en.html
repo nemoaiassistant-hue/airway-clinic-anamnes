@@ -794,72 +794,169 @@
           y += lines.length * (size * 0.45) + 2;
         }
 
+        // Header
+        doc.setDrawColor(185, 150, 69);
+        doc.setLineWidth(0.5);
+        doc.line(margin, 12, pageW - margin, 12);
+        addText('Airway Clinic', 10, false);
         addText('Craniofacial History — Adult', 18, true);
-        y += 4;
-        addText(`Name: ${formData.namn || '-'}`, 11, false);
-        addText(`Email: ${formData.email}`, 11, false);
-        addText(`Date of Birth: ${formData.fodelsedatum || '-'}`, 11, false);
-        addText(`Address: ${formData.adress || '-'}`, 11, false);
-        addText(`Date: ${formData.datum || '-'}`, 11, false);
-        addText(`Consent: ${formData.consent === 'ja' ? 'Yes' : formData.consent === 'nej' ? 'No' : '-'}`, 11, false);
+        doc.line(margin, y, pageW - margin, y);
+        y += 6;
+
+        addText('Contact Information', 13, true);
+        addText(`Name: ${formData.namn || '-'}`, 10, false);
+        addText(`Email: ${formData.email}`, 10, false);
+        addText(`Date of Birth: ${formData.fodelsedatum || '-'}`, 10, false);
+        addText(`Address: ${formData.adress || '-'}`, 10, false);
+        addText(`Date: ${formData.datum || '-'}`, 10, false);
+        addText(`Consent to data storage: ${formData.consent === 'ja' ? 'Yes' : formData.consent === 'nej' ? 'No' : 'Not provided'}`, 10, false);
         y += 4;
 
-        const sectionLabels = {
-          graviditet: 'Pregnancy',
-          tarmhalsa: 'Mother\'s gut health',
-          forlossning: 'Birth/Delivery',
-          kejsarsnitt_beskriv: 'Caesarean details',
-          andning_efter: 'Breathing after birth',
-          ammades: 'Breastfed',
-          hur_lange_ammad: 'How long breastfed',
-          smartam_amning: 'Painful breastfeeding',
-          amningskonsult: 'Breastfeeding consultant',
-          kolik: 'Colic',
-          krakningar: 'Vomiting',
-          mjolkersattning: 'Formula',
-          fast_mat: 'Solid food',
-          krypning: 'Crawling',
-          forsta_steg: 'First steps',
-          finmotorik: 'Fine motor skills',
-          sjukdomar: 'Illnesses',
-          vaccinationer: 'Vaccinations',
-          medicin: 'Medication/Antibiotics',
-          bitvanor: 'Sucking/Biting habits',
-          sensoriskt: 'Sensory difficulties',
-          sensoriskt_beskriv: 'Sensory — description',
-          bordsskick: 'Table manners',
-          krasen: 'Picky eater',
-          hicka: 'Hiccups',
-          svaljning: 'Swallowing difficulties',
-          gaser: 'Gas/Bloating',
-          tonsiller: 'Tonsils/Adenoids',
-          sommen: 'Sleep',
-          sangvatning: 'Bedwetting',
-          sovstallning: 'Sleeping position',
-          gnisslar: 'Teeth grinding',
-          snarkar: 'Snoring',
-          somnnapne: 'Sleep apnoea',
-          huvudvark: 'Headaches',
-          tmj: 'TMJ/Jaw joints',
-          oron: 'Ear pain',
-          andning: 'Breathing',
-          allergier: 'Allergies',
-          husdjur: 'Pets',
-          hallning: 'Posture',
-          beteende: 'Behavioural difficulties',
-          inlarning: 'Learning difficulties',
-          fritid: 'Leisure activities',
-          trauma: 'Previous trauma',
-          ovrigt: 'Additional remarks'
-        };
+        const sections = [
+          {
+            title: '🤰 Pregnancy',
+            fields: [
+              { key: 'graviditet', q: 'How was the pregnancy?' },
+              { key: 'graviditet_annat', q: 'Pregnancy – other' },
+              { key: 'tarmhalsa', q: "How was the mother's gut health?" }
+            ]
+          },
+          {
+            title: '👶 Birth',
+            fields: [
+              { key: 'forlossning', q: 'How was the delivery?' },
+              { key: 'forlossning_annat', q: 'Delivery – other' },
+              { key: 'kejsarsnitt_beskriv', q: 'If caesarean, describe how it went:' },
+              { key: 'andning_efter', q: 'How was the baby\'s breathing after birth?' }
+            ]
+          },
+          {
+            title: '🍼 Breastfeeding & Nutrition',
+            fields: [
+              { key: 'ammades', q: 'Was the baby breastfed?' },
+              { key: 'hur_lange_ammad', q: 'How long was the baby breastfed?' },
+              { key: 'smartam_amning', q: 'Painful breastfeeding? If yes, please describe:' },
+              { key: 'amningskonsult', q: 'Visited a breastfeeding consultant?' },
+              { key: 'amningskonsult_annat', q: 'Breastfeeding consultant – other' },
+              { key: 'kolik', q: 'Did the baby have colic? If yes, please describe:' },
+              { key: 'krakningar', q: 'Did the baby vomit? If yes, how much/how often?' },
+              { key: 'mjolkersattning', q: '(Partially) formula fed? If yes, when and for how long?' },
+              { key: 'fast_mat', q: 'When was solid food introduced and how did it go? Drooling, gagging, etc.' }
+            ]
+          },
+          {
+            title: '🧸 Motor Development',
+            fields: [
+              { key: 'krypning', q: 'When did the baby start crawling? Did they crawl symmetrically before standing?' },
+              { key: 'forsta_steg', q: 'When were the first steps taken?' },
+              { key: 'finmotorik', q: 'Fine motor difficulties? (cutting, drawing, pincer grasp, tying shoes)' }
+            ]
+          },
+          {
+            title: '💊 Health History',
+            fields: [
+              { key: 'sjukdomar', q: 'What types of illnesses has the child had? Sinus, throat or ear infections, stomach pain?' },
+              { key: 'vaccinationer', q: 'Vaccinations? Any reactions to specific vaccinations? Not vaccinated?' },
+              { key: 'medicin', q: 'Previous use of medication or antibiotics:' }
+            ]
+          },
+          {
+            title: '🦷 Sucking & Biting Habits',
+            fields: [
+              { key: 'bitvanor', q: 'Sucking/biting habits?' },
+              { key: 'bitvanor_annat', q: 'Sucking/biting habits – other' }
+            ]
+          },
+          {
+            title: '🔊 Sensory Difficulties',
+            fields: [
+              { key: 'sensoriskt', q: 'Sensory difficulties?' },
+              { key: 'sensoriskt_beskriv', q: 'Tell us more about sensory difficulties:' }
+            ]
+          },
+          {
+            title: '🍽️ Eating & Digestion',
+            fields: [
+              { key: 'bordsskick', q: 'Table manners, large gulps, eats fast/slow?' },
+              { key: 'krasen', q: 'Picky eater? If yes, how, when, and what does the child eat?' },
+              { key: 'hicka', q: 'Does the child often get hiccups?' },
+              { key: 'svaljning', q: 'Difficulty or inability to swallow certain things? Food, pills, drinks?' },
+              { key: 'gaser', q: 'Gas or bloating? If yes, when, how often?' }
+            ]
+          },
+          {
+            title: '🔴 Tonsils & Adenoids',
+            fields: [
+              { key: 'tonsiller', q: 'Problems with tonsils or adenoids?' },
+              { key: 'tonsiller_annat', q: 'Tonsils/adenoids – other' }
+            ]
+          },
+          {
+            title: '😴 Sleep',
+            fields: [
+              { key: 'sommen', q: 'Tell us about sleep:' },
+              { key: 'sangvatning', q: 'Bedwetting problems? If yes, how often?' },
+              { key: 'sovstallning', q: 'Sleeping position' },
+              { key: 'gnisslar', q: 'Teeth grinding? If yes, how often?' },
+              { key: 'snarkar', q: 'Snoring? If yes, how much/how often?' },
+              { key: 'somnnapne', q: 'Sleep apnoea? If yes, how often/how much?' }
+            ]
+          },
+          {
+            title: '🤕 Pain & Symptoms',
+            fields: [
+              { key: 'huvudvark', q: 'Headaches? If yes, tell us more.' },
+              { key: 'tmj', q: 'TMJ pain or clicking jaw joints? If yes, tell us more:' },
+              { key: 'oron', q: 'Ear pain? If yes, how often? With/without discharge?' }
+            ]
+          },
+          {
+            title: '🌬️ Breathing & Allergies',
+            fields: [
+              { key: 'andning', q: 'Breathing' },
+              { key: 'andning_annat', q: 'Breathing – other' },
+              { key: 'allergier', q: 'Allergies? If yes, which ones?' },
+              { key: 'husdjur', q: 'Pets? If yes, which ones?' }
+            ]
+          },
+          {
+            title: '🧠 Posture, Behaviour & Activities',
+            fields: [
+              { key: 'hallning', q: 'How is the posture? Slouched, loose, limping? Etc.' },
+              { key: 'beteende', q: 'Behavioural or neurodevelopmental difficulties? If yes, tell us more:' },
+              { key: 'inlarning', q: 'Learning difficulties? If yes, tell us more:' },
+              { key: 'fritid', q: 'Leisure activities, sports, music, etc? Which ones?' },
+              { key: 'trauma', q: 'Previous trauma?' }
+            ]
+          },
+          {
+            title: '📝 Additional Remarks',
+            fields: [
+              { key: 'ovrigt', q: 'Any additional comments:' }
+            ]
+          }
+        ];
 
-        Object.entries(formData).forEach(([key, val]) => {
-          if (['namn', 'email', 'fodelsedatum', 'adress', 'datum', 'consent'].includes(key)) return;
-          const label = sectionLabels[key] || key;
-          const displayVal = val.replace(/_/g, ' ');
-          addText(label, 11, true);
-          addText(displayVal, 10, false);
-          y += 2;
+        sections.forEach(section => {
+          if (y + 12 > 280) { doc.addPage(); y = 15; }
+          doc.setFillColor(185, 150, 69);
+          doc.rect(margin, y, usable, 7, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(12);
+          doc.setFont('helvetica', 'bold');
+          doc.text(section.title, margin + 3, y + 5.5);
+          doc.setTextColor(75, 75, 99);
+          y += 10;
+
+          section.fields.forEach(f => {
+            const val = formData[f.key];
+            if (val === undefined || val === null || val === '') return;
+            const displayVal = val.replace(/_/g, ' ');
+            addText(f.q, 10, true);
+            addText(displayVal, 10, false);
+            y += 3;
+          });
+          y += 3;
         });
 
         const pdfBase64 = doc.output('datauristring').split(',')[1];
